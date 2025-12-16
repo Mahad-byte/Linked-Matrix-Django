@@ -32,6 +32,8 @@ class SimpleUser(AbstractUser):
 
     # def __repr__(self):
     #      return f""
+    def __sizeof__(self):
+         return super().__sizeof__()
 
 
 class Tags(models.Model):

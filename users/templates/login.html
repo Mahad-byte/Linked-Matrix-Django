@@ -1,6 +1,7 @@
 
 <form method="POST" action="{% url 'login' %}">
         {% csrf_token %} 
+        <input type="hidden" name="next" value="{% url 'home' %}">
         
         <div class="form-group">
             <label for="username">Username:</label>
@@ -12,7 +13,6 @@
             <input type="password" id="password" name="password" required>
         </div>
         
-        <!-- FIXED: Removed <a> tag from inside button -->
         <button type="submit">Log In</button>
 </form>
 <!-- 
