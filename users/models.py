@@ -27,17 +27,17 @@ class SimpleUser(AbstractUser):
     
     # Meta (Inner Class)
     class Meta:
-         verbose_name = User 
+         verbose_name = 'Simple User'
          ordering = ['-created_at']
 
-    # def __repr__(self):
-    #      return f""
-    def __sizeof__(self):
-         return super().__sizeof__()
+    def __str__(self):
+        return f"{self.username}"
 
 
 class Tags(models.Model):
      name = models.CharField(max_length=50)
+     class Meta:
+          verbose_name = 'Tag'
     
 class Post(models.Model):
     title = models.CharField(max_length=200)
@@ -54,5 +54,7 @@ class Post(models.Model):
     
     tag = models.ManyToManyField(Tags, related_name='posts') # Many-to-Many
     created_at = models.DateTimeField(auto_now_add=True)    
+    class Meta:
+         verbose_name = 'Post'
 
 
