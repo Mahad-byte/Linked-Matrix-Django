@@ -1,10 +1,11 @@
 from django.contrib import admin
 from .models import SimpleUser, Post, Tags
 
+
 @admin.action(description='Mark selected users as inactive')
 def mark_inactive(modeladmin, request, queryset):
-    print("Selected users are: ", queryset)
     queryset.update(is_active=False)
+    
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'created_at')
@@ -14,7 +15,9 @@ class UserAdmin(admin.ModelAdmin):
     model_order = ['Simple User', 'Post', 'Tag']
     actions = [mark_inactive]
 
+
 # Register your models here.
 admin.site.register(SimpleUser, UserAdmin)
 admin.site.register(Post)
 admin.site.register(Tags)
+
