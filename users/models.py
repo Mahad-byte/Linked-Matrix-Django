@@ -9,15 +9,17 @@ def check_email(value):
             raise ValueError("Not a valid email")
 
 
-class User(models.Model):
-    email = models.EmailField(max_length=50, validators=[check_email, validate_email])
-    password = models.CharField(max_length=20, )
-    is_business = models.BooleanField(default=0)
-
-
-class SimpleUser(AbstractUser):
+class User(AbstractUser):
+    email = models.EmailField(
+        unique=True,
+        blank=False,
+        null=False,
+        validators=[validate_email, check_email],
+    )
     phone_number = models.CharField(max_length=11)
     created_at = models.DateTimeField(auto_now_add=True)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
     # Field Properties
     @property
@@ -25,11 +27,11 @@ class SimpleUser(AbstractUser):
         return f"{self.first_name}-$"
     
     def __str__(self):
-        return f"{self.username}"
+        return f"{self.email}"
     
     # Meta (Inner Class)
     class Meta:
-         verbose_name = 'Simple User'
+         verbose_name = 'User'
          ordering = ['-created_at']
 
 
@@ -44,7 +46,7 @@ class Tags(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey( # One-to-Many
-        SimpleUser,
+        User,
         on_delete=models.CASCADE,           
         null=True,                          
         blank=True,                         

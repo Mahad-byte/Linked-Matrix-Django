@@ -1,8 +1,8 @@
-from .models import SimpleUser, Post
+from .models import User, Post
 from django.views.generic import ListView
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import render, redirect
@@ -17,8 +17,11 @@ def login_page(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = SimpleUser.objects.get(username='user1')
+        user = get_user_model()
+        user = user.objects.get(username='user1')
         print(user.is_active)
+        # user.set_password(password)
+        # user.save()
         
         check = check_password(password, user.password)
         if not check:
@@ -53,12 +56,12 @@ def signin_page(request):
         if username and password:
             try:
                 # Check if user already exists
-                if SimpleUser.objects.filter(username=username).exists():
+                if User.objects.filter(username=username).exists():
                     messages.error(request, "Username already exists.")
                     return render(request, 'login.html')
                 
                 # Create the user
-                user = SimpleUser.objects.create_user(username=username, password=password)
+                user = User.objects.create_user(username=username, password=password)
                 print(f"User created: {user}")
                 
                 # Authenticate and login
