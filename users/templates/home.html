@@ -1,4 +1,5 @@
 <div>
+    <p>IP Address: {{ request.META.REMOTE_ADDR }}</p>
     {% if user.is_authenticated %}
     <p> Name: {{user}}</p>
     {% else %}
