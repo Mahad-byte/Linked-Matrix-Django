@@ -25,6 +25,7 @@ urlpatterns = [
     path('signin/', views.signin_page, name='signin'),
     path('logout/', views.logout_page, name='logout'),            
     path('home/', views.home_page, name='home'),   
-    path('posts/', views.PostView.as_view(), name='posts'),                   
+    path('posts/', views.PostView.as_view(), name='posts'),
+    path('like_posts/', views.like_post, name='like_post'),                                      
     path('', views.login_page),        
 ]

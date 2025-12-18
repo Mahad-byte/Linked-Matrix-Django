@@ -1,7 +1,10 @@
 from django.db import models
 from django.core.validators import validate_email
-from django.contrib.auth.models import AbstractUser
 
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 # Create your models here.
 def check_email(value):
@@ -35,6 +38,16 @@ class User(AbstractUser):
          ordering = ['-created_at']
 
 
+# Users who have not made a post yet
+class ProxyUsers(get_user_model()):
+
+    @classmethod
+    def get_users_with_no_posts(cls):
+        return cls.objects.filter(post__isnull=True)
+        
+    class Meta:
+        proxy = True 
+        verbose_name = 'Proxy Users'   
 
 class Tags(models.Model):
      name = models.CharField(max_length=50)
@@ -62,4 +75,15 @@ class Post(models.Model):
          verbose_name = 'Post'
          
 
-
+# Single Like Model for multiple Models like Post, Comment, etc.
+class Like(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    is_liked = models.BooleanField(default=False)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    
+    content_object = GenericForeignKey('content_type', 'object_id')
+    
+    class Meta:
+        unique_together = ['user', 'content_type', 'object_id']
+    

@@ -3,16 +3,80 @@
 </head>
 <body>
     <h1>My Posts</h1>
-    
     {% for post in posts %}
         <div>
             <h3>{{ post.title }}</h3>
-            <p>{{ post.content }}</p>
             <small>Posted on: {{ post.created_at }}</small>
+            <span><p>Liked: {{ post.is_liked }}</p></span>
+            {% if post.is_liked %}
+                <button>Liked</button>
+            {% else %}
+                <button class="like-button" data-post-id="{{ post.id }}">Like</button>
+            {% endif %}
             <hr>
         </div>
     {% empty %}
         <p>No posts found.</p>
     {% endfor %}
-    
+    <script>
+
+        // Function to send AJAX request to Django
+        function sendLikeRequest(postId, buttonElement = null) {
+            console.log('Liking post:', postId);
+
+            const csrftoken = getCookie('csrftoken');
+            
+            fetch(`/like_posts/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({post_id: postId}), 
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response:', data);
+                
+                if (data.status === 'success') {
+                    console.log('Post liked successfully!');
+                    alert(data.message);
+                    
+                
+                } else {
+                    console.log("Didn't Liked Post!");
+
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Network error!');
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.like-button').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    sendLikeRequest(this.dataset.postId, this);
+                });
+            });
+        });
+
+    </script>
 </body>
