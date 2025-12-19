@@ -53,10 +53,9 @@ def login_page(request):
 def signin_page(request):
     if request.method == 'POST':
         email = request.POST.get('email')
-        username = request.POST.get('username')
         password = request.POST.get('password')
         
-        if username and password:
+        if email and password:
             try:
                 # Check if user already exists
                 if User.objects.filter(email=email).exists():
@@ -64,7 +63,7 @@ def signin_page(request):
                     return render(request, 'sigin.html')
                 
                 # Create the user
-                user = User.objects.create_user(email=email, username=username, password=password)
+                user = User.objects.create_user(email=email, password=password)
                 print(f"User created: {user}")
                 
                 user_mddel = get_user_model()

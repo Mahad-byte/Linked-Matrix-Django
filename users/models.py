@@ -1,4 +1,6 @@
 from django.db import models
+from .enums import user_group
+from .custommanager import CustomManagerProxy, CustomUserManager
 from django.core.validators import validate_email
 
 from django.contrib.auth.models import AbstractUser
@@ -21,17 +23,14 @@ class User(AbstractUser):
     )
     groups = models.CharField(
         max_length=1,
-        choices=(
-        ('G', 'Gold'),
-        ('S', 'Silver'),
-        ('B', 'Bronze'),
-        ),
+        choices=user_group,
         default='B'
     )
     phone_number = models.CharField(max_length=11)
     created_at = models.DateTimeField(auto_now_add=True)
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = []
+    objects = CustomUserManager()
 
     # Field Properties
     @property
@@ -50,13 +49,11 @@ class User(AbstractUser):
 # Users who have not made a post yet
 class ProxyUsers(get_user_model()):
 
-    @classmethod
-    def get_users_with_no_posts(cls):
-        return cls.objects.filter(post__isnull=True)
+    objects = CustomManagerProxy()
         
     class Meta:
         proxy = True 
-        verbose_name = 'Proxy Users'   
+        verbose_name = 'Proxy Users'
 
 class Tags(models.Model):
      name = models.CharField(max_length=50)
