@@ -11,7 +11,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'created_at')
     list_filter = ('phone_number', 'username')
     search_fields = ('username__startswith', )
-    fields = ('first_name', 'username', 'last_name', 'password','phone_number', 'email', 'is_staff', 'is_active')
+    fields = ('first_name', 'username', 'last_name', 'password','groups', 'phone_number', 'email', 'is_staff', 'is_active')
     model_order = ['Simple User', 'Post', 'Tag']
     actions = [mark_inactive]
 

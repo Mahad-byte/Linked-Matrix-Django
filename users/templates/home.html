@@ -1,5 +1,6 @@
 <div>
     <p>IP Address: {{ request.META.REMOTE_ADDR }}</p>
+    <p>Group: {{ user.groups }}</p>
     {% if user.is_authenticated %}
     <p> Name: {{user}}</p>
     {% else %}

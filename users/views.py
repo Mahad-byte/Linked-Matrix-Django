@@ -20,14 +20,11 @@ def login_page(request):
         return redirect('home')
              
     if request.method == 'POST':
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
         user = get_user_model()
-        user = user.objects.get(username='user2')
-        print(user.is_active)
-        user.set_password(password)
-        user.save()
-        
+        user = user.objects.get(email=email)
+        print(user.password, password)
         check = check_password(password, user.password)
         if not check:
             messages.error(request, "Invalid password.")
@@ -42,8 +39,8 @@ def login_page(request):
                     status=403  
                 )    
         
-        if username and password:
-            user = authenticate(request, username=username, password=password)
+        if email and password:
+            user = authenticate(request, email=email, password=password)
             print("Authenticated: ", user)
 
         if user is not None:
@@ -55,30 +52,40 @@ def login_page(request):
 
 def signin_page(request):
     if request.method == 'POST':
+        email = request.POST.get('email')
         username = request.POST.get('username')
         password = request.POST.get('password')
         
         if username and password:
             try:
                 # Check if user already exists
-                if User.objects.filter(username=username).exists():
-                    messages.error(request, "Username already exists.")
-                    return render(request, 'login.html')
+                if User.objects.filter(email=email).exists():
+                    messages.error(request, "Email already exists.")
+                    return render(request, 'sigin.html')
                 
                 # Create the user
-                user = User.objects.create_user(username=username, password=password)
+                user = User.objects.create_user(email=email, username=username, password=password)
                 print(f"User created: {user}")
                 
+                user_mddel = get_user_model()
+                userr = user_mddel.objects.get(email=email)
+                print(userr.password, password)
+                check = check_password(password, userr.password)
+                if not check:
+                    messages.error(request, "Invalid password.")
+                    return render(request, 'login.html')
+                
                 # Authenticate and login
-                user = authenticate(request, username=username, password=password)
+                user = authenticate(request, email=email, password=password)
+                print("Authenticate: ", user)
                 if user is not None:
                     login(request, user)
                     return redirect('home')
             except Exception as e:
                 messages.error(request, f"Error creating user: {str(e)}")
-                return render(request, 'login.html')
+                return render(request, 'sigin.html')
 
-    return render(request, 'login.html')
+    return render(request, 'sigin.html')
 
 
 def logout_page(request):

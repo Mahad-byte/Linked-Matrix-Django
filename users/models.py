@@ -19,6 +19,15 @@ class User(AbstractUser):
         null=False,
         validators=[validate_email, check_email],
     )
+    groups = models.CharField(
+        max_length=1,
+        choices=(
+        ('G', 'Gold'),
+        ('S', 'Silver'),
+        ('B', 'Bronze'),
+        ),
+        default='B'
+    )
     phone_number = models.CharField(max_length=11)
     created_at = models.DateTimeField(auto_now_add=True)
     USERNAME_FIELD = 'email'
