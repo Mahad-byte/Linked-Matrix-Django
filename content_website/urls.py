@@ -17,15 +17,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from users import views
+from users.views import login_page, signin_page, logout_page, home_page
+from posts.views import PostView
+from likes.views import like_post
+
 
 urlpatterns = [ 
     path('admin/', admin.site.urls),
-    path('login/', views.login_page, name='login'),
-    path('signin/', views.signin_page, name='signin'),
-    path('logout/', views.logout_page, name='logout'),            
-    path('home/', views.home_page, name='home'),   
-    path('posts/', views.PostView.as_view(), name='posts'),
-    path('like_posts/', views.like_post, name='like_post'),                                      
-    path('', views.login_page),        
+    path('login/', login_page, name='login'),
+    path('signin/', signin_page, name='signin'),
+    path('logout/', logout_page, name='logout'),            
+    path('home/', home_page, name='home'),   
+    
+    path('posts/', PostView.as_view(), name='posts'),
+    path('like_posts/', like_post, name='like_post'),   
+                                       
+    path('', login_page),        
 ]
