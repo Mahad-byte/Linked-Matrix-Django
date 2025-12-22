@@ -17,9 +17,6 @@ def login_page(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        user = get_user_model()
-        user = user.objects.get(email=email)
-        print(user.password, password)
         check = check_password(password, user.password)
         if not check:
             messages.error(request, "Invalid password.")

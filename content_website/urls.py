@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 
 from users.views import login_page, signin_page, logout_page, home_page
-from posts.views import PostView
+from posts.views import PostView, update_post
 from likes.views import like_post
 
 
@@ -30,7 +30,8 @@ urlpatterns = [
     path('home/', home_page, name='home'),   
     
     path('posts/', PostView.as_view(), name='posts'),
-    path('like_posts/', like_post, name='like_post'),   
+    path('like_posts/', like_post, name='like_post'), 
+    path('update_post/', update_post, name='update_post'),  
                                        
     path('', login_page),        
 ]

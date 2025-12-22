@@ -77,9 +77,9 @@ class CustomUserManager(BaseUserManager):
     def users_with_group_display(self): 
         return self.annotate(
             group_display=Case(
-                When(groups='A', then=Value('Admin')),
+                When(groups='G', then=Value('Premium User')),
+                When(groups='S', then=Value('Standard User')),
                 When(groups='B', then=Value('Basic User')),
-                When(groups='C', then=Value('Premium User')),
                 default=Value('Unknown'),
                 output_field=CharField()
             )
