@@ -71,7 +71,7 @@ class CustomUserManager(BaseUserManager):
             earliest_creation=Min('created_at'),
         )
     
-    def users_with_email_length(self):
+    def users_with_email_length(self): 
         return self.annotate(email_length=Length('email'))
     
     def users_with_group_display(self): 
@@ -93,3 +93,4 @@ class CustomUserManager(BaseUserManager):
     
     def users_with_groups_prefetched(self):
         return self.prefetch_related('groups')
+    
