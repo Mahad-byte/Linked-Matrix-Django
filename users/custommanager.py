@@ -46,8 +46,8 @@ class CustomUserManager(BaseUserManager):
     def users_with_domain(self, domain):
         return self.filter(email__icontains=domain) # LIKE '%domain'
     
-    def users_without_first_name(self):
-        return self.filter(first_name__isnull=True)
+    def users_without_phone_number(self):
+        return self.filter(phone_number='')
     
     def users_created_before(self, date):
         return self.filter(created_at__lte=date)

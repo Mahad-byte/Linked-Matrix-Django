@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import User, Post, Tags
+from users.models import User
+from posts.models import Post
+from tags.models import Tags
 
 
 @admin.action(description='Mark selected users as inactive')

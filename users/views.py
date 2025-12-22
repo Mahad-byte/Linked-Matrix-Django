@@ -1,4 +1,5 @@
-from .models import User, Post
+from users.models import User
+from posts.models import Post
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required

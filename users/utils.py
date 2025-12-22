@@ -1,8 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
-from .models import Like, Post
+from likes.models import Like
+from posts.models import Post
 from django.http import JsonResponse
-from logging import getLogger
-
 
 
 def attach_is_liked(posts, user):
