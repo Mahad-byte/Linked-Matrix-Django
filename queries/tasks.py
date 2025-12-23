@@ -4,7 +4,7 @@ from django.utils import timezone
 from queries.models import Patient, Doctor
 from logging import getLogger
 import requests
-
+from content_website.settings import webhook_url
 
 @shared_task
 def delete_patients_week_old():
@@ -18,7 +18,7 @@ def delete_patients_week_old():
 
 @shared_task
 def send_info_to_discord():
-    patient_of_all_doctors = Doctor.objects.prefetch_related('doctors')
+    patient_of_all_doctors = Doctor.objects.prefetch_related('doctors').all()
     message = "**Doctor Patient Report**\n\n"
     for details in patient_of_all_doctors:
         doctor_name = details.name
@@ -41,10 +41,10 @@ def send_info_to_discord():
         
 def send_to_discord(text):
     
-    webhoo_url = 'https://discordapp.com/api/webhooks/1453007866368884759/uSDUHCJ-5VyF8UAeVWYiZ3cugRfGU42OAK9sNCchkiroNBD7pa1K2iV38GEZ6quawe4N'
-    
     data = {"content": text}
-    response = requests.post(webhoo_url, json=data)
+    response = requests.post(webhook_url, json=data)
     if response:
         logger = getLogger('request_logger')
         logger.info("Sent WEbhook to Discord!!!!!!!!!")
+    else:
+        print("Invalid webhook_url")
