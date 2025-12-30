@@ -1,0 +1,70 @@
+services:
+ redis:
+    image: "redis:alpine"
+    restart: always
+    volumes:
+      - redis_data:/data
+ db:
+   image: postgres:latest
+   environment:
+     POSTGRES_DB: ${DB_NAME}
+     POSTGRES_USER: ${DB_USER}
+     POSTGRES_PASSWORD: ${DB_PASSWORD}
+   volumes:
+     - postgres_data:/var/lib/postgresql
+   env_file:
+     - .env
+ 
+ web:
+   build: .
+   container_name: content-website
+   ports:
+     - "8000:8000"
+   depends_on:
+     - db
+   environment:
+     DJANGO_SECRET_KEY: ${SECRET_KEY}
+     DEBUG: ${DEBUG}
+     DATABASE_ENGINE: ${DB_ENGINE}
+     DATABASE_NAME: ${DB_NAME}
+     DATABASE_USERNAME: ${DB_USER}
+ 
+     DATABASE_PASSWORD: ${DB_PASSWORD}
+     DATABASE_HOST: ${DB_HOST}
+     DATABASE_PORT: ${DB_PORT}
+
+     CELERY_BROKER_URL: "redis://redis:6379/0"
+     CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+   env_file:
+     - .env
+
+ celery_worker:
+     build: .
+     command: celery -A content_website worker --loglevel=info
+     depends_on:
+      - redis
+      - db
+      - web
+     environment:
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+     env_file:
+      - .env
+
+ celery_beat:
+     build: .
+     command: celery -A content_website beat --loglevel=info
+     depends_on:
+      - redis
+      - db
+      - web
+     environment:
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+     env_file:
+      - .env
+
+volumes:
+   postgres_data:
+   redis_data:
+    driver: local
